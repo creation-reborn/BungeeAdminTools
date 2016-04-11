@@ -20,6 +20,7 @@ import fr.Alphart.BAT.Modules.IModule;
 import fr.Alphart.BAT.Modules.InvalidModuleException;
 import fr.Alphart.BAT.Modules.Core.PermissionManager;
 import fr.Alphart.BAT.Modules.Core.PermissionManager.Action;
+import fr.Alphart.BAT.Modules.Event.PlayerKickEvent;
 import fr.Alphart.BAT.Utils.FormatUtils;
 import fr.Alphart.BAT.Utils.Utils;
 
@@ -91,7 +92,14 @@ public class KickCommand extends CommandHandler {
 		    	}
 		    	
                 checkArgument(PermissionManager.canExecuteAction(Action.KICK, sender, pServer), _("noPerm"));
-		    	
+                
+		    	PlayerKickEvent event = new PlayerKickEvent(player.getName(), sender.getName(), 
+                                (args.length == 1) ? IModule.NO_REASON : Utils.getFinalArg(args, 1), false);
+                        BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+                        if (event.isCancelled()) {
+                            return;
+                        }
+                        
 		    	final String returnedMsg;
 		    	returnedMsg = kick.kickSQL(pUUID, RedisBungee.getApi().getServerFor(pUUID).getName(), sender.getName(), 
 		    		(args.length == 1) ? IModule.NO_REASON : Utils.getFinalArg(args, 1));
@@ -138,6 +146,13 @@ public class KickCommand extends CommandHandler {
 				checkArgument(player != null, _("playerNotFound"));
 
 				checkArgument(!PermissionManager.isExemptFrom(Action.KICK, pName), _("isExempt"));
+                                
+                                PlayerKickEvent event = new PlayerKickEvent(player.getName(), sender.getName(), 
+                                        (args.length == 1) ? IModule.NO_REASON : Utils.getFinalArg(args, 1), true);
+                                BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+                                if (event.isCancelled()) {
+                                    return;
+                                }
 
 				final String returnedMsg = kick.gKick(player, sender.getName(),
 					(args.length == 1) ? IModule.NO_REASON : Utils.getFinalArg(args, 1));
