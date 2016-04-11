@@ -21,6 +21,7 @@ import fr.Alphart.BAT.Modules.InvalidModuleException;
 import fr.Alphart.BAT.Modules.Core.Core;
 import fr.Alphart.BAT.Modules.Core.PermissionManager;
 import fr.Alphart.BAT.Modules.Core.PermissionManager.Action;
+import fr.Alphart.BAT.Modules.Event.PlayerBanEvent;
 import fr.Alphart.BAT.Utils.FormatUtils;
 import fr.Alphart.BAT.Utils.Utils;
 
@@ -174,6 +175,13 @@ public class BanCommand extends CommandHandler {
 
 		checkArgument(!ban.isBan((ip == null) ? target : ip, server), _("alreadyBan"));
 
+                PlayerBanEvent event = new PlayerBanEvent(target, server, staff, 0, reason,ipBan);
+                BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+                if (event.isCancelled())
+                {
+                    return;
+                }
+                
 		if (ipBan && player != null) {
 			returnedMsg = ban.banIP(player, server, staff, 0, reason);
 		} else if (ipBan && pUUID != null) {
