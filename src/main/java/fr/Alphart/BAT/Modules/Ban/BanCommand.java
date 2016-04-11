@@ -319,6 +319,13 @@ public class BanCommand extends CommandHandler {
 		
 		checkArgument(!PermissionManager.isExemptFrom(Action.BAN, target), _("isExempt"));
 		checkArgument(!ban.isBan(target, server), _("alreadyBan"));
+                
+                PlayerBanEvent event = new PlayerBanEvent(target, server, staff, expirationTimestamp, reason,ipBan);
+                BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+                if (event.isCancelled())
+                {
+                    return;
+                }
 
 		if (ipBan && player != null) {
 			returnedMsg = ban.banIP(player, server, staff, expirationTimestamp, reason);
