@@ -11,8 +11,6 @@ import fr.Alphart.BAT.Modules.Core.Importer.Importer.ImportStatus;
 import fr.Alphart.BAT.Utils.CallbackUtils.Callback;
 import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
 import net.md_5.bungee.api.ProxyServer;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.NullConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +60,6 @@ public class DataSourceHandler {
         this.password = Preconditions.checkNotNull(password);
         
         BAT.getInstance().getLogger().config("Initialization of HikariCP in progress ...");
-        Configurator.initialize(new NullConfiguration());
         ds = new HikariDataSource();
         String connUrl = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database +
                 "?useLegacyDatetimeCode=false&characterEncoding=utf8&serverTimezone=" + TimeZone.getDefault().getID();

@@ -1,6 +1,6 @@
 name: ${name}
-author: Alphart
-version: ${version}
 main: fr.Alphart.BAT.BAT
-depends: ['Yamler']
-softdepends: [RedisBungee]
+version: ${version}
+author: Alphart, James137137, LX_Gaming
+depends: [Yamler]
+softDepends: [RedisBungee]
