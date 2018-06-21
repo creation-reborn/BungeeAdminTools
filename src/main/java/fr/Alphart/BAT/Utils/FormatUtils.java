@@ -3,20 +3,27 @@ package fr.Alphart.BAT.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ObjectArrays;
 
 import fr.Alphart.BAT.BAT;
+import fr.Alphart.BAT.I18n.I18n;
 import fr.Alphart.BAT.Modules.BATCommand;
 
 public class FormatUtils {
 	private static StringBuilder sb = new StringBuilder();
+	private static Pattern hoverParsingPattern = Pattern.compile("(?i)(.*?)\\{effect=\"hover\"\\s*?text=\"(.*?)\"\\s*?onHoverText=\"(.*?)\"\\}(.*)");
 
 	/**
 	 * Get the duration between the given timestamp and the current one
@@ -39,7 +46,7 @@ public class FormatUtils {
 			seconds -= 2678400;
 		}
 		if (months > 0) {
-			item.add(months + " months");
+			item.add(months + I18n._("months"));
 		}
 
 		int days = 0;
@@ -48,7 +55,7 @@ public class FormatUtils {
 			seconds -= 86400;
 		}
 		if (days > 0) {
-			item.add(days + " days");
+			item.add(days + I18n._("days"));
 		}
 
 		int hours = 0;
@@ -57,7 +64,7 @@ public class FormatUtils {
 			seconds -= 3600;
 		}
 		if (hours > 0) {
-			item.add(hours + " hours");
+			item.add(hours + I18n._("hours"));
 		}
 
 		int mins = 0;
@@ -66,11 +73,11 @@ public class FormatUtils {
 			seconds -= 60;
 		}
 		if (mins > 0) {
-			item.add(mins + " mins");
+			item.add(mins + I18n._("minutes"));
 		}
 
 		if (seconds > 0) {
-			item.add(seconds + " secs");
+			item.add(seconds + I18n._("seconds"));
 		}
 
 		return Joiner.on(", ").join(item);
@@ -106,11 +113,59 @@ public class FormatUtils {
 	}
 
 	public static List<BaseComponent[]> formatNewLine(final String message) {
+	    //BEWARE: Horrible parsing code below
 		final String[] strMessageArray = message.split("\n");
 		final List<BaseComponent[]> bsList = new ArrayList<BaseComponent[]>();
-		for (int i = 0; i < strMessageArray.length; i++) {
-			bsList.add(TextComponent.fromLegacyText(strMessageArray[i]));
+		for (String line : strMessageArray) {
+		    BaseComponent[] lineComponent = null;
+  		    if(line.contains("{effect=\"hover\"")){
+  		      // A line may contain mutliple efft hover so we need to handle that
+  		      for (String subLine : line.split("(?=\\{effect\\=\"hover\")")){//Trick to split without removing the split char
+    		      try{
+    		          Matcher matcher = hoverParsingPattern.matcher(subLine);
+    		          if(!matcher.find()){
+                        if(lineComponent==null){
+                          lineComponent = TextComponent.fromLegacyText(subLine);
+                        }else{
+                          lineComponent = ObjectArrays.concat(lineComponent, TextComponent.fromLegacyText(subLine), BaseComponent.class);
+                        }
+    		            continue;
+    		          }
+    	              String previousText=matcher.group(1);
+    	              String text=matcher.group(2);
+    	              String onHoverText=matcher.group(3);
+    	              String followingText=matcher.group(4);
+    	              
+    	              BaseComponent hoverMessage = componentsArrayToComponent(TextComponent.fromLegacyText(text));
+    	              hoverMessage.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, TextComponent.fromLegacyText(onHoverText.replace("{newlinehover}", "\n"))));
+    	              
+    	              if(lineComponent==null){
+    	                lineComponent = TextComponent.fromLegacyText(previousText);
+    	              }else{
+    	                lineComponent = ObjectArrays.concat(lineComponent, TextComponent.fromLegacyText(previousText), BaseComponent.class);
+    	              }
+    	              lineComponent=ObjectArrays.concat(lineComponent, new BaseComponent[]{hoverMessage}, BaseComponent.class);
+    	              lineComponent=ObjectArrays.concat(lineComponent, TextComponent.fromLegacyText(followingText), BaseComponent.class);
+    		      }catch(Exception e){
+    		        BAT.getInstance().getLogger().severe("An error occured while parsing hover text. Line: " + line);
+    		        e.printStackTrace();
+    		        bsList.add(TextComponent.fromLegacyText("Parsing error please check console"));
+    		      }
+  		      }
+		    }else{
+		      lineComponent=TextComponent.fromLegacyText(line);
+		    }
+		  
+			bsList.add(lineComponent);
 		}
 		return bsList;
+	}
+	
+	private static BaseComponent componentsArrayToComponent(BaseComponent[] componentsArray){
+	  BaseComponent component=componentsArray[0];
+      for(int j =1; j < componentsArray.length; j++){
+        component.addExtra(componentsArray[j]);
+      }
+      return component;
 	}
 }

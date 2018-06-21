@@ -6,17 +6,17 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
-import net.md_5.bungee.api.ProxyServer;
 
-import com.google.common.base.Charsets;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 
+import fr.Alphart.BAT.Modules.Core.Core;
 import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
-import fr.Alphart.BAT.Utils.MojangAPIProvider;
 import fr.Alphart.BAT.Utils.UUIDNotFoundException;
+import fr.Alphart.BAT.Utils.Utils;
+import fr.Alphart.BAT.Utils.thirdparty.MojangAPIProvider;
 import fr.Alphart.BAT.database.SQLQueries;
 
 public abstract class Importer {
@@ -24,7 +24,7 @@ public abstract class Importer {
     protected final LoadingCache<String, String> uuidCache = CacheBuilder.newBuilder().maximumSize(10000)
             .expireAfterAccess(30, TimeUnit.MINUTES).build(new CacheLoader<String, String>() {
                 public String load(final String pName) throws UUIDNotFoundException {
-                    if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
+                    if (Core.isOnlineMode()) {
                         String uuid = MojangAPIProvider.getUUID(pName);
                         if (uuid != null) {
                             return uuid;
@@ -32,8 +32,7 @@ public abstract class Importer {
                             throw new UUIDNotFoundException(pName);
                         }
                     } else {
-                        return java.util.UUID.nameUUIDFromBytes(("OfflinePlayer:" + pName).getBytes(Charsets.UTF_8))
-                                .toString().replaceAll("-", "");
+                        return Utils.getOfflineUUID(pName);
                     }
 
                 }
@@ -66,7 +65,7 @@ public abstract class Importer {
     }
     
     @Getter
-    public class ImportStatus{
+    public static class ImportStatus{
         // The total number of entries to process (processed and remaining)
         private final int totalEntries;
         private int convertedEntries;
@@ -83,8 +82,13 @@ public abstract class Importer {
             return convertedEntries = convertedEntries + incrementValue;
         }
         
+        public void setDone(){
+          convertedEntries = totalEntries;
+        }
+        
         public double getProgressionPercent(){
-            return (((double)convertedEntries / (double)totalEntries) * 100);
+          double percent = (((double)convertedEntries / (double)totalEntries) * 100);  
+          return Math.round(percent * 100) / (double)100;// round to 2 decimal places
         }
         
         public int getRemainingEntries(){

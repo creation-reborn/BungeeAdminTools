@@ -3,10 +3,13 @@ package fr.Alphart.BAT.Modules.Ban;
 import static com.google.common.base.Preconditions.checkArgument;
 import static fr.Alphart.BAT.I18n.I18n._;
 
+import java.util.List;
 import java.util.UUID;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import com.google.common.base.Joiner;
@@ -41,7 +44,7 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
 			if (args[0].equals("help")) {
 				try {
@@ -52,7 +55,7 @@ public class BanCommand extends CommandHandler {
 				}
 				return;
 			}
-			handleBanCommand(this, false, false, sender, args, confirmedCmd);
+			handleBanCommand(this, false, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -65,9 +68,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleBanCommand(this, false, true, sender, args, confirmedCmd);
+			handleBanCommand(this, false, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -82,9 +85,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleBanCommand(this, true, false, sender, args, confirmedCmd);
+			handleBanCommand(this, true, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -97,14 +100,14 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleBanCommand(this, true, true, sender, args, confirmedCmd);
+			handleBanCommand(this, true, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
 	public static void handleBanCommand(final BATCommand command, final boolean global, final boolean ipBan,
-			final CommandSender sender, final String[] args, final boolean confirmedCmd) {
+			final CommandSender sender, final String[] args, final boolean confirmedCmd, final boolean broadcast) {
 		String target = args[0];
 		String server = IModule.GLOBAL_SERVER;
 		final String staff = sender.getName();
@@ -182,7 +185,9 @@ public class BanCommand extends CommandHandler {
 			returnedMsg = ban.ban(target, server, staff, 0, reason);
 		}
 
-		BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		if(broadcast){
+		  BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		}
 	}
 
 	@RunAsync
@@ -194,9 +199,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleTempBanCommand(this, false, false, sender, args, confirmedCmd);
+			handleTempBanCommand(this, false, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -209,9 +214,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleTempBanCommand(this, false, true, sender, args, confirmedCmd);
+			handleTempBanCommand(this, false, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -224,9 +229,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleTempBanCommand(this, true, false, sender, args, confirmedCmd);
+			handleTempBanCommand(this, true, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -239,14 +244,14 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handleTempBanCommand(this, true, true, sender, args, confirmedCmd);
+			handleTempBanCommand(this, true, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
 	public static void handleTempBanCommand(final BATCommand command, final boolean global, final boolean ipBan,
-			final CommandSender sender, final String[] args, final boolean confirmedCmd) {
+			final CommandSender sender, final String[] args, final boolean confirmedCmd, final boolean broadcast) {
 		String target = args[0];
 		final long expirationTimestamp = Utils.parseDuration(args[1]);
 		String server = IModule.GLOBAL_SERVER;
@@ -320,7 +325,9 @@ public class BanCommand extends CommandHandler {
 			returnedMsg = ban.ban(target , server, staff, expirationTimestamp, reason);
 		}
 
-		BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		if(broadcast){
+		  BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		}
 	}
 
 	@RunAsync
@@ -332,9 +339,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handlePardonCommand(this, false, false, sender, args, confirmedCmd);
+			handlePardonCommand(this, false, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -346,9 +353,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handlePardonCommand(this, false, true, sender, args, confirmedCmd);
+			handlePardonCommand(this, false, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -361,9 +368,9 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handlePardonCommand(this, true, false, sender, args, confirmedCmd);
+			handlePardonCommand(this, true, false, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
@@ -376,14 +383,14 @@ public class BanCommand extends CommandHandler {
 		}
 
 		@Override
-		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd)
+		public void onCommand(final CommandSender sender, final String[] args, final boolean confirmedCmd, boolean broadcast)
 				throws IllegalArgumentException {
-			handlePardonCommand(this, true, true, sender, args, confirmedCmd);
+			handlePardonCommand(this, true, true, sender, args, confirmedCmd, broadcast);
 		}
 	}
 
 	public static void handlePardonCommand(final BATCommand command, final boolean global, final boolean ipUnban,
-			final CommandSender sender, final String[] args, final boolean confirmedCmd) {
+			final CommandSender sender, final String[] args, final boolean confirmedCmd, final boolean broadcast) {
 		String target = args[0];
 		String server = IModule.ANY_SERVER;
 		final String staff = sender.getName();
@@ -439,7 +446,80 @@ public class BanCommand extends CommandHandler {
 		} else {
 			returnedMsg = ban.unBan(target, server, staff, reason);
 		}
-
-		BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		
+		if(broadcast){
+		  BAT.broadcast(returnedMsg, Action.banBroadcast.getPermission());
+		}
 	}
+	
+  @RunAsync
+  public static class BanListCmd extends BATCommand {
+    public BanListCmd() {
+      super("banlist", "[page]", "See the latest active bans on the server",
+          Action.banList.getPermission());
+    }
+
+    @Override
+    public void onCommand(final CommandSender sender, final String[] args,
+        final boolean confirmedCmd, boolean broadcast) throws IllegalArgumentException {
+      int page = 1;
+      int entriesPerPage = 15;
+      
+      if(args.length > 0){
+        try{
+          page= Integer.parseInt(args[0]);
+        }catch(NumberFormatException e){
+          throw new IllegalArgumentException("Incorrect page number");
+        }
+      }
+      
+      // TODO: Banlist is a beta feature, that should be refactored with LookupFormatter because it's almost the same
+      final StringBuilder msg = new StringBuilder();
+
+      final List<BanEntry> bans = ban.getBans(entriesPerPage, (page-1) * entriesPerPage);
+      msg.append(_("banListHeader").replace("{page}", String.valueOf(page)));
+      msg.append("\n");
+      
+      boolean isBan = false;
+      for (final BanEntry banEntry : bans) {
+          if (banEntry.isActive()) {
+              isBan = true;
+          }
+      }
+
+      for(BanEntry ban : bans){
+          final String begin = Core.defaultDF.format(ban.getBeginDate());
+          
+          if(ban.isActive()){
+            final String end;
+            if(ban.getEndDate() == null){
+               end = "permanent ban";
+            }else{
+                end = Core.defaultDF.format(ban.getEndDate());
+            }
+            
+            msg.append(_("activeBanListRow", 
+                new String[] { ban.getEntity(), begin, ban.getServer(), ban.getReason(), ban.getStaff(), end}));
+          }else{
+            final String endDate;
+            if(ban.getEndDate() == null){
+                endDate = Core.defaultDF.format(ban.getUnbanDate());
+            }else{
+                endDate = Core.defaultDF.format(ban.getEndDate());
+            }
+            final String unbanReason = ban.getUnbanReason();
+            String unbanStaff = ban.getUnbanStaff();
+            if(unbanStaff == null){
+                unbanStaff = "temporary ban";
+            }
+            
+            msg.append(_("archiveBanListRow", new String[] { ban.getEntity(), begin, ban.getServer(), ban.getReason(),
+                ban.getStaff(), endDate, unbanReason, unbanStaff}));
+          }
+      }
+
+      for(BaseComponent[] messagePart : FormatUtils.formatNewLine(ChatColor.translateAlternateColorCodes('&', msg.toString())))
+        sender.sendMessage(messagePart);
+    }
+  }
 }
