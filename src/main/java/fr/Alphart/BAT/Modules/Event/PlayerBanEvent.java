@@ -6,7 +6,7 @@ public class PlayerBanEvent extends BATEvent {
     private final String server;
     private final long expirationTimestamp;
     private boolean ipBan;
-
+    
     public PlayerBanEvent(String target, String server, String staff, long expirationTimestamp, String reason, boolean ipBan) {
         setTarget(target);
         setStaff(staff);
@@ -14,7 +14,7 @@ public class PlayerBanEvent extends BATEvent {
         this.server = server;
         this.expirationTimestamp = expirationTimestamp;
     }
-
+    
     public boolean isIPBan() {
         return ipBan;
     }
@@ -23,13 +23,12 @@ public class PlayerBanEvent extends BATEvent {
         return expirationTimestamp;
     }
     
-    public boolean isTempBan()
-    {
+    public boolean isTempBan() {
         return expirationTimestamp > 0;
     }
-
+    
     public String getServer() {
         return server;
     }
-
+    
 }

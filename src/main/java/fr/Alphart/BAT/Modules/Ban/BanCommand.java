@@ -9,6 +9,8 @@ import fr.Alphart.BAT.Modules.CommandHandler;
 import fr.Alphart.BAT.Modules.Core.Core;
 import fr.Alphart.BAT.Modules.Core.PermissionManager;
 import fr.Alphart.BAT.Modules.Core.PermissionManager.Action;
+import fr.Alphart.BAT.Modules.Event.PlayerBanEvent;
+import fr.Alphart.BAT.Modules.Event.PlayerUnbanEvent;
 import fr.Alphart.BAT.Modules.IModule;
 import fr.Alphart.BAT.Modules.InvalidModuleException;
 import fr.Alphart.BAT.Utils.FormatUtils;
@@ -175,6 +177,12 @@ public class BanCommand extends CommandHandler {
         
         checkArgument(!ban.isBan((ip == null) ? target : ip, server), _("alreadyBan"));
         
+        PlayerBanEvent event = new PlayerBanEvent(target, server, staff, 0, reason, ipBan);
+        BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        
         if (ipBan && player != null) {
             returnedMsg = ban.banIP(player, server, staff, 0, reason);
         } else if (ipBan && pUUID != null) {
@@ -315,6 +323,12 @@ public class BanCommand extends CommandHandler {
         checkArgument(!PermissionManager.isExemptFrom(Action.BAN, target), _("isExempt"));
         checkArgument(!ban.isBan(target, server), _("alreadyBan"));
         
+        PlayerBanEvent event = new PlayerBanEvent(target, server, staff, expirationTimestamp, reason, ipBan);
+        BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        
         if (ipBan && player != null) {
             returnedMsg = ban.banIP(player, server, staff, expirationTimestamp, reason);
         } else if (ipBan && pUUID != null) {
@@ -438,6 +452,12 @@ public class BanCommand extends CommandHandler {
                 ban.isBan((ip == null) ? target : ip, server),
                 (IModule.ANY_SERVER.equals(server) ? _("notBannedAny", formatArgs) : ((ipUnban) ? _("notBannedIP",
                         formatArgs) : _("notBanned", formatArgs))));
+        
+        PlayerUnbanEvent event = new PlayerUnbanEvent(target, server, staff, reason, ipUnban);
+        BAT.getInstance().getProxy().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
         
         if (ipUnban) {
             returnedMsg = ban.unBanIP(target, server, staff, reason);
