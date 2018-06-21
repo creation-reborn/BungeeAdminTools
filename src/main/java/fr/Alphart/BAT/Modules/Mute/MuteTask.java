@@ -1,14 +1,14 @@
 package fr.Alphart.BAT.Modules.Mute;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import fr.Alphart.BAT.BAT;
 import fr.Alphart.BAT.database.DataSourceHandler;
 import fr.Alphart.BAT.database.SQLQueries;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * This task handles the mute related update :<br>
@@ -18,30 +18,30 @@ import fr.Alphart.BAT.database.SQLQueries;
  * <b>This task must be run asynchronously </b>
  */
 public class MuteTask implements Runnable {
-	private final Mute mute;
-
-	public MuteTask(final Mute muteModule) {
-		mute = muteModule;
-	}
-
-	@Override
-	public void run() {
-		Statement statement = null;
-		try (Connection conn = BAT.getConnection()) {
-			statement = conn.createStatement();
-			if (DataSourceHandler.isSQLite()) {
-				statement.executeUpdate(SQLQueries.Mute.SQLite.updateExpiredMute);
-			} else {
-				statement.executeUpdate(SQLQueries.Mute.updateExpiredMute);
-			}
-		} catch (final SQLException e) {
-			DataSourceHandler.handleException(e);
-		} finally {
-			DataSourceHandler.close(statement);
-		}
-		// Update player mute data
-		for (final ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-			mute.updateMuteData(player.getName());
-		}
-	}
+    private final Mute mute;
+    
+    public MuteTask(final Mute muteModule) {
+        mute = muteModule;
+    }
+    
+    @Override
+    public void run() {
+        Statement statement = null;
+        try (Connection conn = BAT.getConnection()) {
+            statement = conn.createStatement();
+            if (DataSourceHandler.isSQLite()) {
+                statement.executeUpdate(SQLQueries.Mute.SQLite.updateExpiredMute);
+            } else {
+                statement.executeUpdate(SQLQueries.Mute.updateExpiredMute);
+            }
+        } catch (final SQLException e) {
+            DataSourceHandler.handleException(e);
+        } finally {
+            DataSourceHandler.close(statement);
+        }
+        // Update player mute data
+        for (final ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            mute.updateMuteData(player.getName());
+        }
+    }
 }
