@@ -217,7 +217,7 @@ public class LookupFormatter {
                         .replace("{player}", pName).replace("{uuid}", Core.getUUID(pName))
                         .replace("{ip_users}", ip_users)
                         // '¤' is used as a space character, so we replace it with space and display correctly the escaped one
-                        .replace("¤", " ").replace("\\¤", "¤")
+                        .replace("\u00A4", " ").replace("\\\u00A4", "\u00A4")
         ));
         
         return finalMessage;
@@ -272,7 +272,7 @@ public class LookupFormatter {
                 .replace("{bans_number}", String.valueOf(bansNumber)).replace("{mutes_number}", String.valueOf(mutesNumber))
                 .replace("{ip}", ip).replace("{ip_users}", ip_users)
                 // '¤' is used as a space character, so we replace it with space and display correctly the escaped one
-                .replace("¤", " ").replace("\\¤", "¤");
+                .replace("\u00A4", " ").replace("\\\u00A4", "\u00A4");
         
         if (replacedString.contains("{ip_location}")) {
             String ipLocation = "";
@@ -349,7 +349,7 @@ public class LookupFormatter {
                         .replace("{comments_number}", String.valueOf(comments_number))
                         .replace("{warnings_number}", String.valueOf(warnings_number))
                         .replace("{staff}", staff).replace("{uuid}", Core.getUUID(staff))
-                        .replace("¤", " ").replace("\\¤", "¤")
+                        .replace("\u00A4", " ").replace("\\\u00A4", "\u00A4")
         ));
         
         return finalMessage;
