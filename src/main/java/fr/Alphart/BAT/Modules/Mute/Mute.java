@@ -12,7 +12,6 @@ import fr.Alphart.BAT.Utils.UUIDNotFoundException;
 import fr.Alphart.BAT.Utils.Utils;
 import fr.Alphart.BAT.database.DataSourceHandler;
 import fr.Alphart.BAT.database.SQLQueries;
-import lombok.Getter;
 import net.cubespace.Yamler.Config.Comment;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -118,12 +117,12 @@ public class Mute implements IModule, Listener {
     }
     
     public class MuteConfig extends ModuleConfiguration {
+        
         public MuteConfig() {
             init(name);
         }
         
         @Comment("Forbidden commands when a player is mute")
-        @Getter
         private List<String> forbiddenCmds = new ArrayList<String>() {
             private static final long serialVersionUID = 1L;
             
@@ -131,6 +130,10 @@ public class Mute implements IModule, Listener {
                 add("msg");
             }
         };
+        
+        public List<String> getForbiddenCmds() {
+            return forbiddenCmds;
+        }
     }
     
     public void loadMuteMessage(final String pName, final String server) {

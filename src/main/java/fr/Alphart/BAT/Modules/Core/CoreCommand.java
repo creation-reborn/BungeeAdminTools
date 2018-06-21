@@ -26,7 +26,6 @@ import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
 import fr.Alphart.BAT.Utils.FormatUtils;
 import fr.Alphart.BAT.Utils.Utils;
 import fr.Alphart.BAT.database.DataSourceHandler;
-import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -237,7 +236,7 @@ public class CoreCommand extends BATCommand {
     
     @RunAsync
     public static class LookupCmd extends BATCommand {
-        @Getter
+        
         private static LookupFormatter lookupFormatter;
         private ModulesManager modules;
         
@@ -337,6 +336,9 @@ public class CoreCommand extends BATCommand {
             }
         }
         
+        public static LookupFormatter getLookupFormatter() {
+            return lookupFormatter;
+        }
     }
     
     @RunAsync

@@ -6,7 +6,6 @@ import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
 import fr.Alphart.BAT.Utils.UUIDNotFoundException;
 import fr.Alphart.BAT.Utils.Utils;
 import fr.Alphart.BAT.database.SQLQueries;
-import lombok.Getter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -116,8 +115,8 @@ public class MinecraftPreUUIDImporter extends Importer {
         }
     }
     
-    @Getter
     private class Minecraft1v6_BanRecord {
+        
         private String uuid = null;
         private String pName = null;
         private String ip = null;
@@ -162,6 +161,34 @@ public class MinecraftPreUUIDImporter extends Importer {
                 staffBan = staffBan.substring(0, 20);
             }
             reason = splittedLine[4];
+        }
+        
+        public String getUuid() {
+            return uuid;
+        }
+        
+        public String getPName() {
+            return pName;
+        }
+        
+        public String getIp() {
+            return ip;
+        }
+        
+        public String getReason() {
+            return reason;
+        }
+        
+        public String getStaffBan() {
+            return staffBan;
+        }
+        
+        public Timestamp getBeginBan() {
+            return beginBan;
+        }
+        
+        public Timestamp getExpirationBan() {
+            return expirationBan;
         }
     }
 }

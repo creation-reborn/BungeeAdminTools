@@ -1,7 +1,6 @@
 package fr.Alphart.BAT.Modules;
 
 import fr.Alphart.BAT.BAT;
-import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.YamlConfig;
 
@@ -36,7 +35,6 @@ public abstract class ModuleConfiguration extends YamlConfig {
         load();
     }
     
-    @Getter
     private boolean enabled = true;
     
     private Map<String, Boolean> commands = new HashMap<String, Boolean>();
@@ -76,5 +74,9 @@ public abstract class ModuleConfiguration extends YamlConfig {
                 it.remove();
             }
         }
+    }
+    
+    public boolean isEnabled() {
+        return enabled;
     }
 }

@@ -8,7 +8,6 @@ import fr.Alphart.BAT.Modules.Core.CommandQueue;
 import fr.Alphart.BAT.Modules.Core.Core;
 import fr.Alphart.BAT.Modules.Core.CoreCommand;
 import fr.Alphart.BAT.Utils.UUIDNotFoundException;
-import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -30,6 +29,7 @@ import static fr.Alphart.BAT.I18n.I18n._;
 import static fr.Alphart.BAT.I18n.I18n.__;
 
 public abstract class BATCommand extends net.md_5.bungee.api.plugin.Command implements TabExecutor {
+    
     private static final Pattern pattern = Pattern.compile("<.*?>");
     private final String name;
     private final String syntax;
@@ -37,8 +37,6 @@ public abstract class BATCommand extends net.md_5.bungee.api.plugin.Command impl
     private final String permission;
     private boolean runAsync = false;
     private boolean coreCommand = false;
-    
-    @Setter
     private int minArgs = 0;
     
     /**
@@ -284,5 +282,9 @@ public abstract class BATCommand extends net.md_5.bungee.api.plugin.Command impl
             }
             CommandQueue.queueCommand(sender, command);
         }
+    }
+    
+    public void setMinArgs(int minArgs) {
+        this.minArgs = minArgs;
     }
 }

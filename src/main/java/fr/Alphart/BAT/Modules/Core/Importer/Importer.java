@@ -10,7 +10,6 @@ import fr.Alphart.BAT.Utils.UUIDNotFoundException;
 import fr.Alphart.BAT.Utils.Utils;
 import fr.Alphart.BAT.Utils.thirdparty.MojangAPIProvider;
 import fr.Alphart.BAT.database.SQLQueries;
-import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,7 +62,6 @@ public abstract class Importer {
         stmt.executeUpdate();
     }
     
-    @Getter
     public static class ImportStatus {
         // The total number of entries to process (processed and remaining)
         private final int totalEntries;
@@ -92,6 +90,14 @@ public abstract class Importer {
         
         public int getRemainingEntries() {
             return totalEntries - convertedEntries;
+        }
+        
+        public int getTotalEntries() {
+            return totalEntries;
+        }
+        
+        public int getConvertedEntries() {
+            return convertedEntries;
         }
     }
 }

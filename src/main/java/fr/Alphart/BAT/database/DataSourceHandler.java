@@ -11,8 +11,8 @@ import fr.Alphart.BAT.Modules.Core.Importer.Importer.ImportStatus;
 import fr.Alphart.BAT.Utils.CallbackUtils.Callback;
 import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
 import net.md_5.bungee.api.ProxyServer;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.varia.NullAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class DataSourceHandler {
         this.password = Preconditions.checkNotNull(password);
         
         BAT.getInstance().getLogger().config("Initialization of HikariCP in progress ...");
-        BasicConfigurator.configure(new NullAppender());
+        Configurator.initialize(new NullConfiguration());
         ds = new HikariDataSource();
         String connUrl = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database +
                 "?useLegacyDatetimeCode=false&characterEncoding=utf8&serverTimezone=" + TimeZone.getDefault().getID();
@@ -197,7 +197,6 @@ public class DataSourceHandler {
     /**
      * Generate a backup of the BAT data in mysql database.
      *
-     * @param path
      * @param onComplete
      * @throws RuntimeException if MySQL is not used or if the creation of the backup file failed
      */
