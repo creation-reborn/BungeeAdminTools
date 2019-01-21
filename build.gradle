@@ -1,17 +1,20 @@
 apply plugin: "java"
+apply plugin: "maven"
 apply plugin: "signing"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = "nz.co.lolnet"
-archivesBaseName = "BungeeAdminTools"
+archivesBaseName = "bungeeadmintools"
 version = "1.5.3-premium"
 
 configurations {
     provided {
         compile.extendsFrom(provided)
     }
+
+    build.dependsOn("uploadArchives")
 }
 
 repositories {
@@ -40,6 +43,16 @@ dependencies {
     compile("org.slf4j:slf4j-nop:1.7.25")
 }
 
+task javadocJar(type: Jar) {
+    classifier = "javadoc"
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
 jar {
     from {
         (configurations.compile - configurations.provided).findAll({
@@ -60,6 +73,43 @@ processResources {
     }
 }
 
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        if (project.hasProperty("maven.url")) {
+            mavenDeployer {
+                project.logger.lifecycle("Uploading Archives")
+                repository(url: project.property("maven.url"))
+
+                pom {
+                    groupId = project.group
+                    artifactId = project.archivesBaseName
+                    version = project.version
+                    project {
+                        name = project.archivesBaseName
+                        packaging = "jar"
+
+                        scm {
+                            url = "https://github.com/lolnetnz/BungeeAdminTools"
+                            connection = "scm:git:https://github.com/lolnetnz/BungeeAdminTools.git"
+                            developerConnection = "scm:git:git@github.com:lolnetnz/BungeeAdminTools.git"
+                        }
+
+                        issueManagement {
+                            system = "GitHub Issues"
+                            url = "https://github.com/lolnetnz/BungeeAdminTools/issues"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 task signJar {
     doFirst {
         if (!project.hasProperty("signing.keyStorePath") || !project.hasProperty("signing.secretKeyRingFile")) {
@@ -73,7 +123,7 @@ task signJar {
     }
 
     doLast {
-        jar.outputs.files.each {
+        configurations.archives.allArtifacts.files.each {
             ant.signjar(
                 jar: it,
                 alias: project.property("signing.alias"),
