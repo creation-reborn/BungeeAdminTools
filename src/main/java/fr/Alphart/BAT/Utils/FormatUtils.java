@@ -26,7 +26,7 @@ public class FormatUtils {
     /**
      * Get the duration between the given timestamp and the current one
      *
-     * @param timestamp in milliseconds which must be superior to the current
+     * @param futureTimestamp in milliseconds which must be superior to the current
      *                  timestamp
      * @return readable duration
      */

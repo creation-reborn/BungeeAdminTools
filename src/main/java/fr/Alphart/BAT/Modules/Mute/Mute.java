@@ -381,9 +381,8 @@ public class Mute implements IModule, Listener {
      *
      * @param server   ; set to "(global)", to global mute
      * @param staff
-     * @param duration ; set to 0 for mute def
+     * @param expirationTimestamp ; set to 0 for mute def
      * @param reason   | optional
-     * @param ip
      */
     public String muteIP(final ProxiedPlayer player, final String server, final String staff,
                          final long expirationTimestamp, final String reason) {
@@ -399,7 +398,6 @@ public class Mute implements IModule, Listener {
      *                    (global), remove global mute
      * @param staff
      * @param reason
-     * @param unMuteIP
      */
     public String unMute(final String mutedEntity, final String server, final String staff, final String reason) {
         PreparedStatement statement = null;
@@ -481,7 +479,6 @@ public class Mute implements IModule, Listener {
      *                 (global), remove global mute
      * @param staff
      * @param reason   | optional
-     * @param duration ; set to 0 for mute def
      */
     public String unMuteIP(final String entity, final String server, final String staff, final String reason) {
         if (Utils.validIP(entity)) {

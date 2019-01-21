@@ -248,7 +248,7 @@ public class Ban implements IModule, Listener {
      * @param bannedEntity | can be an ip or a player name
      * @param server       ; set to "(global)", to global ban
      * @param staff
-     * @param duration     ; set to 0 for ban def
+     * @param expirationTimestamp     ; set to 0 for ban def
      * @param reason       | optional
      * @return
      */
@@ -339,9 +339,8 @@ public class Ban implements IModule, Listener {
      *
      * @param server   ; set to "(global)", to global ban
      * @param staff
-     * @param duration ; set to 0 for ban def
+     * @param expirationTimestamp ; set to 0 for ban def
      * @param reason   | optional
-     * @param ip
      */
     public String banIP(final ProxiedPlayer player, final String server, final String staff,
                         final long expirationTimestamp, final String reason) {
@@ -369,7 +368,6 @@ public class Ban implements IModule, Listener {
      *                     (global), remove global ban
      * @param staff
      * @param reason
-     * @param unBanIP
      */
     public String unBan(final String bannedEntity, final String server, final String staff, final String reason) {
         PreparedStatement statement = null;
@@ -436,7 +434,6 @@ public class Ban implements IModule, Listener {
      *                 (global), remove global ban
      * @param staff
      * @param reason   | optional
-     * @param duration ; set to 0 for ban def
      */
     public String unBanIP(final String entity, final String server, final String staff, final String reason) {
         if (Utils.validIP(entity)) {

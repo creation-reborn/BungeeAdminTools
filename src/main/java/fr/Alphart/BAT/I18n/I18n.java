@@ -153,7 +153,7 @@ public class I18n {
     }
     
     /**
-     * Same as {@link #_(String, String[])} except it adds a prefix
+     * Same as _(String, String[]) except it adds a prefix
      *
      * @param message
      * @param formatObject
@@ -169,10 +169,9 @@ public class I18n {
     }
     
     /**
-     * Same as {@link #_(String, String[])} except it adds a prefix
+     * Same as _(String, String[]) except it adds a prefix
      *
      * @param message
-     * @param formatObject
      * @return
      */
     public static BaseComponent[] __(final String message) {
@@ -188,7 +187,7 @@ public class I18n {
      * Preprocess formatArgs to replace value contained in the map argsReplacer,
      * in order to have global instead of global for example
      *
-     * @param args
+     * @param formatArgs
      * @return
      */
     public static String[] preprocessArgs(final String[] formatArgs) {
