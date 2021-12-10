@@ -18,7 +18,7 @@ configurations {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven {
         name = "md-5"
         url = "https://repo.md-5.net/content/groups/public"
