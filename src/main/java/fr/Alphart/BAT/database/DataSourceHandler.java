@@ -3,7 +3,7 @@ package fr.Alphart.BAT.database;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import com.zaxxer.hikari.HikariDataSource;
 import fr.Alphart.BAT.BAT;
 import fr.Alphart.BAT.Modules.Core.Importer.Importer;
@@ -66,6 +66,7 @@ public class DataSourceHandler {
         if (!urlParameters.isEmpty()) {
             connUrl += "&" + urlParameters;
         }
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         ds.setJdbcUrl(connUrl);
         ds.setUsername(this.username);
         ds.setPassword(this.password);
@@ -76,7 +77,7 @@ public class DataSourceHandler {
             int intOffset = Calendar.getInstance().getTimeZone().getOffset(Calendar.getInstance().getTimeInMillis()) / 1000;
             String offset = String.format("%02d:%02d", Math.abs(intOffset / 3600), Math.abs((intOffset / 60) % 60));
             offset = (intOffset >= 0 ? "+" : "-") + offset;
-            conn.createStatement().executeQuery("SET time_zone='" + offset + "';");
+            conn.createStatement().execute("SET time_zone='" + offset + "';");
             conn.close();
             BAT.getInstance().getLogger().config("BoneCP is loaded !");
         } catch (final SQLException e) {

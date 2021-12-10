@@ -1,6 +1,6 @@
 package fr.Alphart.BAT.Modules.Core.Importer;
 
-import com.mysql.jdbc.MysqlDataTruncation;
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import fr.Alphart.BAT.BAT;
 import fr.Alphart.BAT.Utils.CallbackUtils.ProgressCallback;
 import fr.Alphart.BAT.database.DataSourceHandler;
