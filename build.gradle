@@ -36,11 +36,11 @@ repositories {
 dependencies {
     provided(fileTree(dir: "./libs/", include: ["*.jar"]))
     provided("com.imaginarycode.minecraft:RedisBungee:0.3.8-INTERIM")
-    compile("com.zaxxer:HikariCP:3.2.0")
-    provided("mysql:mysql-connector-java:5.1.46")
+    compile("com.zaxxer:HikariCP:4.0.3")
+    provided("mysql:mysql-connector-java:8.0.27")
     // provided("net.alpenblock:BungeePerms:3.0-dev-52")
     provided("net.cubespace:Yamler-Core:2.4.0-SNAPSHOT")
-    provided("net.md-5:bungeecord-api:1.12-SNAPSHOT")
+    provided("net.md-5:bungeecord-api:1.18-R0.1-SNAPSHOT")
     compile("org.slf4j:slf4j-nop:1.7.25")
 }
 
